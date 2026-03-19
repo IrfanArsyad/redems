@@ -1,0 +1,219 @@
+:root {
+  /* Dark theme - Refined deep space palette */
+  --color-base: #0f1117;
+  --color-mantle: #13151e;
+  --color-crust: #0b0d14;
+
+  /* Surface levels for depth */
+  --color-surface-0: #161822;
+  --color-surface-1: #1a1d2b;
+  --color-surface-2: #1f2233;
+  --color-overlay-0: #252838;
+  --color-overlay-1: #2c3044;
+  --color-overlay-2: #343850;
+
+  /* Text hierarchy */
+  --color-text: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-faint: #475569;
+
+  /* Accent - Refined blue with more variations */
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-muted: rgba(99, 102, 241, 0.15);
+  --color-accent-subtle: rgba(99, 102, 241, 0.08);
+  --color-accent-glow: rgba(99, 102, 241, 0.25);
+
+  /* Semantic colors */
+  --color-danger: #ef4444;
+  --color-danger-muted: rgba(239, 68, 68, 0.12);
+  --color-warning: #f59e0b;
+  --color-warning-muted: rgba(245, 158, 11, 0.12);
+  --color-success: #10b981;
+  --color-success-muted: rgba(16, 185, 129, 0.12);
+  --color-info: #06b6d4;
+  --color-info-muted: rgba(6, 182, 212, 0.12);
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.03);
+  --color-border-accent: rgba(99, 102, 241, 0.3);
+
+  /* Layout areas */
+  --color-sidebar: #0d0f16;
+  --color-titlebar: #0b0d14;
+  --color-statusbar: #0d0f16;
+  --color-input: #161822;
+  --color-tab-active: #161822;
+  --color-tab-inactive: #0f1117;
+
+  /* RGB channels for Tailwind opacity modifier support */
+  --color-base-rgb: 15 17 23;
+  --color-surface-0-rgb: 22 24 34;
+  --color-overlay-0-rgb: 37 40 56;
+  --color-accent-rgb: 99 102 241;
+  --color-accent-hover-rgb: 129 140 248;
+  --color-danger-rgb: 239 68 68;
+  --color-warning-rgb: 245 158 11;
+  --color-success-rgb: 16 185 129;
+  --color-info-rgb: 6 182 212;
+
+  /* Chart colors */
+  --color-chart-tooltip-bg: #252838;
+  --color-chart-text-muted: #64748b;
+  --color-chart-text-subtle: #94a3b8;
+  --color-chart-blue: #89b4fa;
+  --color-chart-green: #a6e3a1;
+  --color-chart-orange: #fab387;
+  --color-chart-purple: #cba6f7;
+  --color-chart-red: #f38ba8;
+  --color-chart-cyan: #89dceb;
+  --color-chart-pink: #f5c2e7;
+  --color-chart-teal: #94e2d5;
+  --color-chart-yellow: #f9e2af;
+  --color-chart-sky: #74c7ec;
+  --color-chart-lavender: #b4befe;
+  --color-chart-mauve: #eba0ac;
+  --color-chart-blue-bg: rgba(137, 180, 250, 0.1);
+  --color-chart-green-bg: rgba(166, 227, 161, 0.1);
+  --color-chart-orange-bg: rgba(250, 179, 135, 0.1);
+  --color-chart-purple-bg: rgba(203, 166, 247, 0.1);
+
+  /* Scrollbar */
+  --color-scrollbar: rgba(255, 255, 255, 0.08);
+  --color-scrollbar-hover: rgba(255, 255, 255, 0.15);
+
+  /* Selection */
+  --color-selection: rgba(99, 102, 241, 0.25);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-inner: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+.light {
+  --color-base: #fafbfc;
+  --color-mantle: #f1f5f9;
+  --color-crust: #e2e8f0;
+
+  --color-surface-0: #ffffff;
+  --color-surface-1: #f8fafc;
+  --color-surface-2: #f1f5f9;
+  --color-overlay-0: #e2e8f0;
+  --color-overlay-1: #cbd5e1;
+  --color-overlay-2: #94a3b8;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #475569;
+  --color-text-faint: #64748b;
+
+  --color-accent: #4f46e5;
+  --color-accent-hover: #6366f1;
+  --color-accent-muted: rgba(79, 70, 229, 0.1);
+  --color-accent-subtle: rgba(79, 70, 229, 0.05);
+  --color-accent-glow: rgba(79, 70, 229, 0.15);
+
+  --color-danger: #dc2626;
+  --color-danger-muted: rgba(220, 38, 38, 0.08);
+  --color-warning: #d97706;
+  --color-warning-muted: rgba(217, 119, 6, 0.08);
+  --color-success: #059669;
+  --color-success-muted: rgba(5, 150, 105, 0.08);
+  --color-info: #0891b2;
+  --color-info-muted: rgba(8, 145, 178, 0.08);
+
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-subtle: rgba(0, 0, 0, 0.04);
+  --color-border-accent: rgba(79, 70, 229, 0.25);
+
+  --color-sidebar: #f1f5f9;
+  --color-titlebar: #f8fafc;
+  --color-statusbar: #f1f5f9;
+  --color-input: #ffffff;
+  --color-tab-active: #ffffff;
+  --color-tab-inactive: #f8fafc;
+
+  /* RGB channels for Tailwind opacity modifier support */
+  --color-base-rgb: 250 251 252;
+  --color-surface-0-rgb: 255 255 255;
+  --color-overlay-0-rgb: 226 232 240;
+  --color-accent-rgb: 79 70 229;
+  --color-accent-hover-rgb: 99 102 241;
+  --color-danger-rgb: 220 38 38;
+  --color-warning-rgb: 217 119 6;
+  --color-success-rgb: 5 150 105;
+  --color-info-rgb: 8 145 178;
+
+  /* Chart colors */
+  --color-chart-tooltip-bg: #f8fafc;
+  --color-chart-text-muted: #475569;
+  --color-chart-text-subtle: #334155;
+  --color-chart-blue: #3b82f6;
+  --color-chart-green: #22c55e;
+  --color-chart-orange: #f97316;
+  --color-chart-purple: #a855f7;
+  --color-chart-red: #ef4444;
+  --color-chart-cyan: #06b6d4;
+  --color-chart-pink: #ec4899;
+  --color-chart-teal: #14b8a6;
+  --color-chart-yellow: #eab308;
+  --color-chart-sky: #0ea5e9;
+  --color-chart-lavender: #8b5cf6;
+  --color-chart-mauve: #f43f5e;
+  --color-chart-blue-bg: rgba(59, 130, 246, 0.1);
+  --color-chart-green-bg: rgba(34, 197, 94, 0.1);
+  --color-chart-orange-bg: rgba(249, 115, 22, 0.1);
+  --color-chart-purple-bg: rgba(168, 85, 247, 0.1);
+
+  --color-scrollbar: rgba(0, 0, 0, 0.12);
+  --color-scrollbar-hover: rgba(0, 0, 0, 0.2);
+
+  --color-selection: rgba(79, 70, 229, 0.15);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.1);
+  --shadow-inner: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar);
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-scrollbar-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-selection);
+}
