@@ -3,7 +3,20 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useConnectionStore } from '@renderer/stores/connection.store'
 import { useUiStore } from '@renderer/stores/ui.store'
-import { AlertTriangle, Loader2, FileText, X } from 'lucide-vue-next'
+import KeyBrowser from '@renderer/components/keys/KeyBrowser.vue'
+import CLIPanel from '@renderer/components/cli/CLIPanel.vue'
+import ServerInfo from '@renderer/components/server/ServerInfo.vue'
+import SlowLog from '@renderer/components/server/SlowLog.vue'
+import ClientList from '@renderer/components/server/ClientList.vue'
+import PubSubPanel from '@renderer/components/pubsub/PubSubPanel.vue'
+import MonitorPanel from '@renderer/components/monitor/MonitorPanel.vue'
+import MemoryAnalyzer from '@renderer/components/monitor/MemoryAnalyzer.vue'
+import ClusterOverview from '@renderer/components/cluster/ClusterOverview.vue'
+import {
+  AlertTriangle, Loader2, X,
+  Key, Server, Radio, Activity, Network, Terminal, HardDrive,
+  Info, Clock3, Users
+} from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,11 +39,28 @@ const isConnected = computed(() =>
 
 const isReconnecting = ref(false)
 
-// Split pane state
-const leftPanelWidth = ref(320)
-const isDragging = ref(false)
-const startX = ref(0)
-const startWidth = ref(0)
+// Main panel tab
+type MainTab = 'keys' | 'server' | 'pubsub' | 'monitor' | 'memory' | 'cluster'
+const activeMainTab = ref<MainTab>('keys')
+
+// Server sub-tab
+type ServerSubTab = 'info' | 'slowlog' | 'clients'
+const activeServerTab = ref<ServerSubTab>('info')
+
+const mainTabs: Array<{ id: MainTab; label: string; icon: any }> = [
+  { id: 'keys', label: 'Keys', icon: Key },
+  { id: 'server', label: 'Server', icon: Server },
+  { id: 'pubsub', label: 'PubSub', icon: Radio },
+  { id: 'monitor', label: 'Monitor', icon: Activity },
+  { id: 'memory', label: 'Memory', icon: HardDrive },
+  { id: 'cluster', label: 'Cluster', icon: Network }
+]
+
+const serverSubTabs: Array<{ id: ServerSubTab; label: string; icon: any }> = [
+  { id: 'info', label: 'Info', icon: Info },
+  { id: 'slowlog', label: 'Slow Log', icon: Clock3 },
+  { id: 'clients', label: 'Clients', icon: Users }
+]
 
 // Bottom panel state (CLI)
 const bottomPanelHeight = computed(() => uiStore.bottomPanelHeight)
@@ -40,7 +70,6 @@ const startY = ref(0)
 const startHeight = ref(0)
 
 onMounted(async () => {
-  // If not connected, attempt to connect
   if (!isConnected.value && connection.value) {
     try {
       await connectionStore.connect(connectionId.value)
@@ -48,14 +77,11 @@ onMounted(async () => {
       // Will show reconnect prompt
     }
   }
-
-  // If connection doesn't exist at all, redirect to welcome
   if (!connection.value) {
     router.replace({ name: 'welcome' })
   }
 })
 
-// Watch for connection going away
 watch(
   () => connectionStore.connections,
   () => {
@@ -65,7 +91,6 @@ watch(
   }
 )
 
-// Unsubscribe on unmount
 let unsubscribeStatus: (() => void) | null = null
 onMounted(() => {
   unsubscribeStatus = connectionStore.initEventListeners()
@@ -74,7 +99,6 @@ onUnmounted(() => {
   if (unsubscribeStatus) unsubscribeStatus()
 })
 
-// Reconnect handler
 async function handleReconnect() {
   isReconnecting.value = true
   try {
@@ -88,31 +112,6 @@ async function handleReconnect() {
 
 function handleGoBack() {
   router.push({ name: 'welcome' })
-}
-
-// Horizontal split pane drag
-function onDragStart(e: MouseEvent) {
-  isDragging.value = true
-  startX.value = e.clientX
-  startWidth.value = leftPanelWidth.value
-  document.addEventListener('mousemove', onDragMove)
-  document.addEventListener('mouseup', onDragEnd)
-  document.body.style.cursor = 'col-resize'
-  document.body.style.userSelect = 'none'
-}
-
-function onDragMove(e: MouseEvent) {
-  if (!isDragging.value) return
-  const delta = e.clientX - startX.value
-  leftPanelWidth.value = Math.max(200, Math.min(600, startWidth.value + delta))
-}
-
-function onDragEnd() {
-  isDragging.value = false
-  document.removeEventListener('mousemove', onDragMove)
-  document.removeEventListener('mouseup', onDragEnd)
-  document.body.style.cursor = ''
-  document.body.style.userSelect = ''
 }
 
 // Vertical split pane drag (bottom panel)
@@ -148,14 +147,14 @@ function onBottomDragEnd() {
       <div class="flex h-full flex-col items-center justify-center gap-4">
         <AlertTriangle class="h-12 w-12 text-text-muted" :stroke-width="1.5" />
         <div class="text-center">
-          <h2 class="text-base font-medium text-text">Connection Lost</h2>
-          <p class="mt-1 text-md text-text-muted">
+          <h2 class="text-md font-medium text-text">Connection Lost</h2>
+          <p class="mt-1 text-xs text-text-muted">
             {{ connectionState?.error || `Not connected to ${connection.name}` }}
           </p>
         </div>
         <div class="flex gap-3">
           <button
-            class="flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-md font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+            class="flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
             :disabled="isReconnecting"
             @click="handleReconnect"
           >
@@ -167,7 +166,7 @@ function onBottomDragEnd() {
             {{ isReconnecting ? 'Reconnecting...' : 'Reconnect' }}
           </button>
           <button
-            class="rounded-md border border-border px-4 py-2 text-md text-text-muted transition-colors hover:border-border-accent hover:text-text"
+            class="rounded-md border border-border px-4 py-2 text-xs text-text-muted transition-colors hover:border-border-accent hover:text-text"
             @click="handleGoBack"
           >
             Go Back
@@ -178,92 +177,124 @@ function onBottomDragEnd() {
 
     <!-- Workspace layout (when connected) -->
     <template v-else-if="isConnected && connection">
-      <div class="flex flex-1 overflow-hidden">
-        <!-- Left panel: Key Browser -->
-        <div
-          class="flex-shrink-0 overflow-hidden border-r border-border bg-surface-0"
-          :style="{ width: `${leftPanelWidth}px` }"
+      <!-- Main tab bar -->
+      <div class="flex items-center gap-0.5 px-2 py-1 bg-mantle border-b border-border flex-shrink-0">
+        <button
+          v-for="tab in mainTabs"
+          :key="tab.id"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150"
+          :class="activeMainTab === tab.id
+            ? 'bg-surface-0 text-accent shadow-sm'
+            : 'text-text-muted hover:text-text hover:bg-overlay-0/30'"
+          @click="activeMainTab = tab.id"
         >
-          <div class="flex h-full flex-col">
-            <div class="border-b border-border px-3 py-2">
-              <h2 class="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                Key Browser
-              </h2>
+          <component :is="tab.icon" class="w-3.5 h-3.5" :stroke-width="2" />
+          {{ tab.label }}
+        </button>
+
+        <div class="flex-1" />
+
+        <!-- CLI toggle -->
+        <button
+          class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md transition-all duration-150"
+          :class="bottomPanelVisible
+            ? 'bg-surface-0 text-accent shadow-sm'
+            : 'text-text-muted hover:text-text hover:bg-overlay-0/30'"
+          @click="uiStore.toggleBottomPanel()"
+        >
+          <Terminal class="w-3.5 h-3.5" :stroke-width="2" />
+          CLI
+        </button>
+      </div>
+
+      <!-- Content area -->
+      <div class="flex flex-1 min-h-0 flex-col">
+        <!-- Main panel content -->
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <!-- Keys panel -->
+          <KeyBrowser
+            v-if="activeMainTab === 'keys'"
+            :connection-id="connectionId"
+          />
+
+          <!-- Server panel -->
+          <div v-else-if="activeMainTab === 'server'" class="flex flex-col h-full">
+            <!-- Server sub-tabs -->
+            <div class="flex items-center gap-0.5 px-3 py-1.5 bg-surface-0 border-b border-border flex-shrink-0">
+              <button
+                v-for="tab in serverSubTabs"
+                :key="tab.id"
+                class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded transition-colors"
+                :class="activeServerTab === tab.id
+                  ? 'bg-accent-muted text-accent'
+                  : 'text-text-muted hover:text-text hover:bg-overlay-0/30'"
+                @click="activeServerTab = tab.id"
+              >
+                <component :is="tab.icon" class="w-3 h-3" :stroke-width="2" />
+                {{ tab.label }}
+              </button>
             </div>
-            <div class="flex flex-1 items-center justify-center">
-              <p class="text-xs text-text-muted">Key browser will be loaded here</p>
+            <div class="flex-1 min-h-0 overflow-auto">
+              <ServerInfo
+                v-if="activeServerTab === 'info'"
+                :connection-id="connectionId"
+              />
+              <SlowLog
+                v-else-if="activeServerTab === 'slowlog'"
+                :connection-id="connectionId"
+              />
+              <ClientList
+                v-else-if="activeServerTab === 'clients'"
+                :connection-id="connectionId"
+              />
             </div>
           </div>
-        </div>
 
-        <!-- Horizontal resize handle -->
-        <div
-          class="relative z-10 w-0 cursor-col-resize"
-          @mousedown="onDragStart"
-        >
-          <div
-            class="absolute -left-px top-0 h-full w-[3px] transition-colors hover:bg-accent"
-            :class="{ 'bg-accent': isDragging }"
+          <!-- PubSub panel -->
+          <PubSubPanel
+            v-else-if="activeMainTab === 'pubsub'"
+            :connection-id="connectionId"
+          />
+
+          <!-- Monitor panel -->
+          <MonitorPanel
+            v-else-if="activeMainTab === 'monitor'"
+            :connection-id="connectionId"
+          />
+
+          <!-- Memory panel -->
+          <MemoryAnalyzer
+            v-else-if="activeMainTab === 'memory'"
+            :connection-id="connectionId"
+          />
+
+          <!-- Cluster panel -->
+          <ClusterOverview
+            v-else-if="activeMainTab === 'cluster'"
+            :connection-id="connectionId"
           />
         </div>
 
-        <!-- Right panel: Key Detail / Editor -->
-        <div class="flex min-w-0 flex-1 flex-col">
-          <!-- Main content area -->
-          <div class="flex flex-1 items-center justify-center overflow-auto">
-            <div class="text-center text-text-muted">
-              <FileText class="mx-auto mb-3 h-10 w-10 opacity-50" :stroke-width="1.5" />
-              <p class="text-md">Select a key to view its contents</p>
-            </div>
-          </div>
-
-          <!-- Bottom panel resize handle -->
-          <div
-            v-if="bottomPanelVisible"
-            class="relative z-10 h-0 cursor-row-resize"
-            @mousedown="onBottomDragStart"
-          >
-            <div
-              class="absolute -top-px left-0 h-[3px] w-full transition-colors hover:bg-accent"
-              :class="{ 'bg-accent': isDraggingBottom }"
-            />
-          </div>
-
-          <!-- Bottom panel: CLI -->
-          <div
-            v-if="bottomPanelVisible"
-            class="flex-shrink-0 overflow-hidden border-t border-border bg-surface-0"
-            :style="{ height: `${bottomPanelHeight}px` }"
-          >
-            <div class="flex h-full flex-col">
-              <div class="flex items-center justify-between border-b border-border px-3 py-1.5">
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-text-muted">CLI</h2>
-                <button
-                  class="rounded p-0.5 text-text-muted transition-colors hover:bg-overlay-0 hover:text-text"
-                  @click="uiStore.hideBottomPanel()"
-                >
-                  <X class="h-3.5 w-3.5" :stroke-width="2" />
-                </button>
-              </div>
-              <div class="flex flex-1 items-center justify-center">
-                <p class="font-mono text-xs text-text-muted">CLI terminal will be rendered here</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Status bar toggle for bottom panel -->
-      <div
-        v-if="!bottomPanelVisible"
-        class="flex items-center border-t border-border bg-statusbar-bg px-3 py-1"
-      >
-        <button
-          class="text-xs text-text-muted transition-colors hover:text-text"
-          @click="uiStore.showBottomPanel()"
+        <!-- Bottom panel resize handle -->
+        <div
+          v-if="bottomPanelVisible"
+          class="relative z-10 h-0 cursor-row-resize flex-shrink-0"
+          @mousedown="onBottomDragStart"
         >
-          Toggle CLI
-        </button>
+          <div
+            class="absolute -top-px left-0 h-[3px] w-full transition-colors hover:bg-accent"
+            :class="{ 'bg-accent': isDraggingBottom }"
+          />
+        </div>
+
+        <!-- Bottom panel: CLI -->
+        <div
+          v-if="bottomPanelVisible"
+          class="flex-shrink-0 overflow-hidden border-t border-border"
+          :style="{ height: `${bottomPanelHeight}px` }"
+        >
+          <CLIPanel :connection-id="connectionId" />
+        </div>
       </div>
     </template>
   </div>

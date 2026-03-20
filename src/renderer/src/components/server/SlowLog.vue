@@ -44,7 +44,7 @@ function toggleSort(column: 'id' | 'timestamp' | 'duration'): void {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortColumn.value = column
-    sortDirection.value = column === 'duration' ? 'desc' : 'desc'
+    sortDirection.value = 'desc'
   }
 }
 
